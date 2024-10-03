@@ -1,17 +1,19 @@
 import wfuzz
 
 # Target URL (replace with the target URL)
-target_url = "http://example.com"
+
+target_url=input("Enter your url: ")
+
 
 # Common wordlist for fuzzing
-wordlist = "/usr/share/wordlists/common.txt"
+# wordlist = "/usr/share/wordlists/common.txt"
 
-# Function for a general fuzzing scan
-def general_fuzz():
-    print("[*] General fuzzing scan...")
-    with wfuzz.FuzzSession(target=target_url, payloads=[("file", dict(fn=wordlist))]) as session:
-        for result in session.fuzz():
-            print(result)
+# # Function for a general fuzzing scan
+# def general_fuzz():
+#     print("[*] General fuzzing scan...")
+#     with wfuzz.FuzzSession(target=target_url, payloads=[("file", dict(fn=wordlist))]) as session:
+#         for result in session.fuzz():
+#             print(result)
 
 # Function for SQL injection fuzzing
 def sql_injection_scan():
@@ -38,20 +40,20 @@ def csrf_scan():
             print(result)
 
 # Function for directory scan
-def directory_scan():
-    print("[*] Directory scan...")
-    with wfuzz.FuzzSession(target=target_url + "/FUZZ", payloads=[("file", dict(fn=wordlist))]) as session:
-        for result in session.fuzz():
-            print(result)
+# def directory_scan():
+#     print("[*] Directory scan...")
+#     with wfuzz.FuzzSession(target=target_url + "/FUZZ", payloads=[("file", dict(fn=wordlist))]) as session:
+#         for result in session.fuzz():
+#             print(result)
 
 # Main function to run all scans
 def run_all_scans():
     print("[*] Starting fuzzing tests...")
-    general_fuzz()
+    # general_fuzz()
     sql_injection_scan()
     xss_scan()
     csrf_scan()
-    directory_scan()
+    # directory_scan()
 
 if __name__ == "__main__":
     run_all_scans()
