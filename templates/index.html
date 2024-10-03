@@ -26,7 +26,7 @@
         document.getElementById('fuzz-form').addEventListener('submit', async function(event) {
             event.preventDefault();
             const url = document.getElementById('url').value;
-            const response = await fetch('/fuzz', {
+            const response = await fetch('/xss', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
