@@ -2,6 +2,7 @@ from flask import *
 import requests
 from bs4 import BeautifulSoup
 import threading
+import json
 from urllib.parse import urljoin
 
 app = Flask(__name__)
@@ -11,6 +12,21 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     return render_template('index.html')
+
+
+
+@app.route('/data')
+def show_data():
+    #  def json_show():
+    #     with open ('/home/sup_man/fuzzer/fuzzer/output.json') as file:
+    #         data = json.load(file)
+    #     return
+
+    return render_template('data.html',data=data)
+
+
+
+
 # Sample payloads for fuzzing
 payloads = {
     "sql_injection": ["' OR '1'='1'", "' UNION SELECT NULL--", "' DROP TABLE users;--"],
