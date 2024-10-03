@@ -1,0 +1,8 @@
+[console_scripts]
+wfencode = wfuzz.wfuzz:main_encoder
+wfpayload = wfuzz.wfuzz:main_filter
+wfuzz = wfuzz.wfuzz:main
+
+[gui_scripts]
+wxfuzz = wfuzz.wfuzz:main_gui
+
