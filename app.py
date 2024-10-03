@@ -1,32 +1,38 @@
 from flask import *
 import requests
+import os
 from bs4 import BeautifulSoup
 import threading
-import json
 from urllib.parse import urljoin
 
 app = Flask(__name__)
 
 
 
+
 @app.route('/')
-def index():
-    return render_template('index.html')
+def test():
+    return render_template('test.html')
+
+@app.route('/xss')
+def xss():
+    return render_template('xss.html')
 
 
+@app.route('/csrf')
 
-@app.route('/data')
-def show_data():
-    #  def json_show():
-    #     with open ('/home/sup_man/fuzzer/fuzzer/output.json') as file:
-    #         data = json.load(file)
-    #     return
+def csrf():
+    return render_template('csrf.html')
 
-    return render_template('data.html',data=data)
+@app.route('/sqli')
 
+def sqli():
+    return render_template('sqli.html')
 
+@app.route('/dir')
 
-
+def dir():
+    return render_template('dir.html')
 # Sample payloads for fuzzing
 payloads = {
     "sql_injection": ["' OR '1'='1'", "' UNION SELECT NULL--", "' DROP TABLE users;--"],
@@ -50,9 +56,10 @@ def add_schema_if_missing(url):
     return url
 
 # Function to extract all forms from a web page
+
 def extract_forms(html_content):
     soup = BeautifulSoup(html_content, 'html.parser')
-    forms = soup.find_all('form')
+    forms = soup.find_all('form')   
     return forms
 
 # Function to fuzz form fields
