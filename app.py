@@ -1,161 +1,110 @@
 from flask import *
-import requests
+import json
 import os
-from bs4 import BeautifulSoup
-import threading
-from urllib.parse import urljoin
 
 app = Flask(__name__)
 
+# from flask import Flask, request, render_template, redirect, url_for, jsonify
 
 
 
 @app.route('/')
-def test():
+def home():
     return render_template('test.html')
-
-@app.route('/xss')
-def xss():
-    return render_template('xss.html')
-
-
-@app.route('/csrf')
-
-def csrf():
-    return render_template('csrf.html')
-
-@app.route('/sqli')
-
-def sqli():
-    return render_template('sqli.html')
-
-@app.route('/dir')
-
-def dir():
-    return render_template('dir.html')
-# Sample payloads for fuzzing
-payloads = {
-    "sql_injection": ["' OR '1'='1'", "' UNION SELECT NULL--", "' DROP TABLE users;--"],
-    "xss": ['<script>alert(1)</script>', '<img src=x onerror=alert(1)>'],
-    "buffer_overflow": ['A' * 5000]
-}
-
-# Function to send GET or POST requests
-def send_request(url, method="GET", data=None, headers=None, cookies=None):
-    if method == "GET":
-        response = requests.get(url, headers=headers, cookies=cookies)
-    elif method == "POST":
-        response = requests.post(url, data=data, headers=headers, cookies=cookies)
-    return response
-
-# Function to add schema if missing and clean up the URL
-def add_schema_if_missing(url):
-    url = url.strip()  # Remove any leading/trailing spaces
-    if not url.startswith(('http://', 'https://')):
-        return 'http://' + url
-    return url
-
-# Function to extract all forms from a web page
-
-def extract_forms(html_content):
-    soup = BeautifulSoup(html_content, 'html.parser')
-    forms = soup.find_all('form')   
-    return forms
-
-# Function to fuzz form fields
-def fuzz_form(base_url, form, payloads):
-    form_data = {}
-    # Extract input fields and fill them with fuzzing payloads
-    for input_field in form.find_all('input'):
-        field_name = input_field.get('name')
-        if field_name:
-            form_data[field_name] = payloads['sql_injection'][0]  # Fuzzing with SQL injection payload for demo
-
-    # Resolve the form action (relative or absolute)
-    action = form.get('action')
-    if not action:
-        action = base_url  # Default to the base URL if no action is specified
-    else:
-        action = urljoin(base_url, action)  # Handle relative URLs by joining with base URL
-
-    method = form.get('method').upper() if form.get('method') else 'POST'
-    response = send_request(action, method=method, data=form_data)
-    
-    return response
-
-# Function to check vulnerabilities in the response
-def check_vulnerabilities(response):
-    vulnerabilities = []
-    if "SQL" in response.text or "database" in response.text:
-        vulnerabilities.append("SQL Injection vulnerability found!")
-    if "<script>" in response.text:
-        vulnerabilities.append("XSS vulnerability found!")
-    return vulnerabilities
-
-# Function to fuzz headers and cookies
-def fuzz_headers_and_cookies(url, payloads):
-    headers = {
-        'User-Agent': payloads['xss'][0],  # Fuzzing with XSS payload for User-Agent header
-        'Referer': payloads['sql_injection'][0]  # Fuzzing with SQL injection payload for Referer header
-    }
-    cookies = {'session_id': payloads['sql_injection'][0]}  # Fuzzing with SQL injection payload for cookies
-
-    response = send_request(url, headers=headers, cookies=cookies)
-    return check_vulnerabilities(response)
-
-# Function to fuzz URLs
-def fuzz_url_params(url, payloads):
-    vulnerabilities = []
-    for payload in payloads['sql_injection']:
-        fuzzed_url = f"{url}?id={payload}"
-        response = send_request(fuzzed_url)
-        vulnerabilities.extend(check_vulnerabilities(response))
-    return vulnerabilities
-
-# Function to fuzz forms concurrently
-def fuzz_concurrently(url, forms, payloads):
-    threads = []
-    results = []
-
-    def thread_func(form):
-        response = fuzz_form(url, form, payloads)
-        results.extend(check_vulnerabilities(response))
-
-    for form in forms:
-        thread = threading.Thread(target=thread_func, args=(form,))
-        threads.append(thread)
-        thread.start()
-
-    for thread in threads:
-        thread.join()
-
-    return results
 
 @app.route('/fuzz', methods=['POST'])
 def fuzz():
-    target_url = request.json.get('url')
-    if not target_url:
-        return jsonify({"error": "No URL provided"}), 400
-
-    target_url = add_schema_if_missing(target_url)
-
-    vulnerabilities = {}
-
-    # Fuzz URL parameters
-    vulnerabilities['url_params'] = fuzz_url_params(target_url, payloads)
-
-    # Fuzz headers and cookies
-    vulnerabilities['headers_and_cookies'] = fuzz_headers_and_cookies(target_url, payloads)
-
-    # Fuzz forms on the page
-    response = send_request(target_url)
-    forms = extract_forms(response.text)
-    if forms:
-        vulnerabilities['forms'] = fuzz_concurrently(target_url, forms, payloads)
+    url = request.form.get('url')  # Getting the URL from the form
+    if url:
+        # Perform fuzzing logic with the URL
+        # For now, we will just print the URL and return it for testing
+        print(f"Received URL for fuzzing: {url}")
+        return jsonify({'success': True, 'message': f'Fuzzing started on: {url}'})
     else:
-        vulnerabilities['forms'] = ["No forms found on the page."]
+        return jsonify({'success': False, 'message': 'Invalid URL'}), 400
 
-    return jsonify(vulnerabilities)
+
+
+# XSS Vulnerability Testing
+@app.route('/xss', methods=['POST'])
+def xss():
+    url = request.form.get('url')
+    if url:
+        # Sanitize the URL for safety
+        if os.path.exists('xss.json'):
+            os.remove('xss.json')
+        try:
+            os.system(f"wfuzz -c -z file,wordlist/xss.txt -f xss.json,json -u {url}?q=FUZZ")
+        except:
+            return "Error"
+    return render_template('xss.html')
+
+
+# Endpoint to display XSS test results
+@app.route('/xss/results')
+def xss_results():
+    if os.path.exists('xss.json'):
+        with open('xss.json') as f:
+            data = json.load(f)
+        return render_template('results.html', results=data)
+    return "No results found for XSS testing."
+
+
+# Zero Redirect Testing
+@app.route('/zero_re', methods=['GET,POST'])
+def zero_re():
+    url = request.form.get('url')
+    if url:
+        # Sanitize the URL for safety
+        if os.path.exists('ze_redict.json'):
+            os.remove('ze_redict.json')
+        try:
+            os.system(f"wfuzz -c -z file,wordlist/zero_re.txt -f ze_redict.json,json -u {url}?redirect=FUZZ --hc 302")
+        except:
+            return "Error"
+    return render_template('dir.html')
+
+
+# Endpoint to display Zero Redirect test results
+@app.route('/zero_re/results')
+def zero_re_results():
+    if os.path.exists('ze_redict.json'):
+        with open('ze_redict.json') as f:
+            data = json.load(f)
+        return render_template('results.html', results=data)
+    return "No results found for Zero Redirect testing."
+
+
+# SQL Injection Testing
+@app.route('/sqli', methods=['GET','POST'])
+def sqli():
+    url = request.form.get('url')
+    if url:
+        # Sanitize the URL for safety
+        if os.path.exists('sqli.json'):
+            os.remove('sqli.json')
+        try:
+            os.system(f'wfuzz -c -z file,wordlist/sqli.txt --hc 404 -d "username=FUZZ&password=test" {url}')
+        except:
+            return "Error"
+    return render_template('sqli.html')
+
+
+# Endpoint to display SQLi test results
+@app.route('/sqli/results')
+def sqli_results():
+    if os.path.exists('sqli.json'):
+        with open('sqli.json') as f:
+            data = json.load(f)
+        return render_template('results.html', results=data)
+    return "No results found for SQL Injection testing."
+
+
+# Directory Route
+@app.route('/dir')
+def dir():
+    return render_template('dir.html')
+
 
 if __name__ == "__main__":
     app.run(debug=True)

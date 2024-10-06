@@ -1,81 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fuzzing Tool</title>
+    <title>Landing Page</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #1f2937; /* Dark background */
-            color: #f9fafb; /* Light text color */
-        }
-    </style>
 </head>
-<body class="flex flex-col items-center justify-center h-screen p-6">
-    <h1 class="text-4xl font-bold mb-8">Fuzzing Tool</h1>
-    <form id="fuzz-form" class="bg-gray-800 p-6 rounded-lg shadow-md w-full max-w-md">
-        <label for="url" class="block text-lg font-bold mb-2">Enter URL to Fuzz:</label>
-        <p>Example usage:- http://example.com</p>
-        <input type="text" id="url" class="w-full p-2 mb-4 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="http://example.com" required>
-        <button type="submit" class="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded">Start Fuzzing</button>
-    </form>
-    <div id="results" class="mt-8 w-full max-w-md"></div>
+<style>
+    .Hero {
+    background: linear-gradient(320deg, rgba(247,141,133,1) 18%, rgba(250,6,46,1) 48%, rgba(245,147,79,1) 77%);
+    background-size: 200% 200%; /* Increase the size of the background for more noticeable movement */
+    animation: bars 10s ease-in-out infinite;
+    color: white !important;
+    transition: width 0.4s ease-in-out;
+}
 
-    <script>
-        document.getElementById('fuzz-form').addEventListener('submit', async function(event) {
-            event.preventDefault();
-            const url = document.getElementById('url').value;
-            const response = await fetch('/xss', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ url })
-            });
-            const data = await response.json();
-            displayResults(data);
-        });
+section{
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+}
 
-        function displayResults(data) {
-            const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = '';
 
-            for (const [key, value] of Object.entries(data)) {
-                const section = document.createElement('div');
-                section.className = 'mb-4';
-                const heading = document.createElement('h2');
-                heading.className = 'text-2xl font-bold mb-2';
-                heading.textContent = key.replace(/_/g, ' ').toUpperCase();
-                section.appendChild(heading);
+.bolder{
+    font-weight: bolder;
+    font-size: 1.5rem;
+}
 
-                const list = document.createElement('ul');
-                value.forEach(item => {
-                    const listItem = document.createElement('li');
-                    listItem.className = 'p-2 border border-gray-600 mb-1 rounded';
-                    listItem.textContent = item;
-                    list.appendChild(listItem);
-                });
-                section.appendChild(list);
-                resultsDiv.appendChild(section);
-            }
-        }
-    </script>
-    <!-- This JavaScript code snippet listens for the submission of a form with the ID `fuzz-form`. Upon form submission, it prevents the default behavior and performs the following steps: -->
-<!-- 
-    1. **Extracts the URL** entered by the user from the input field with the ID `url`.
-    2. **Sends a POST request** to the server endpoint `/fuzz`, passing the URL in the request body as JSON.
-    3. **Waits for a response** from the server, which is expected to be JSON data.
-    4. **Calls `displayResults(data)`** to dynamically generate and display the results on the webpage.
-    
-    The `displayResults` function does the following:
-    
-    1. It takes the received `data` and finds the `results` div to display the content.
-    2. It iterates over the `data` entries (assumed to be a dictionary of key-value pairs).
-    3. For each key-value pair, it creates a section with a heading displaying the key (formatted by replacing underscores with spaces and converting to uppercase).
-    4. It creates a list for each value (assumed to be an array) and populates the list items accordingly.
-    5. These sections are then appended to the `results` div.
-    
-    This setup is useful for a fuzzing tool where you send a URL to the backend to perform some processing (like security fuzzing), and then return results to be displayed on the frontend. If you want further adjustments or improvements, let me know! -->
+@keyframes bars {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%; /* Change the direction for a more fluid movement */
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+</style>
+<body class=" text-gray-800 flex flex-col min-h-screen">
+
+    <!-- Hero Section -->
+    <section class="Hero text-white flex items-center justify-center h-screen">
+        <div class="text-center">
+            <h1 class="text-5xl font-bold mb-4">FuZ...Zer</h1>
+            <p class="text-xl mb-8" style="font-weight: bolder;">Stay One Step Ahead of Threats with FuZ...Zer</p>
+            <a href="{{ url_for('index' ) }}" class="bg-white text-red-600 font-semibold py-2 px-4 rounded shadow-lg hover:bg-gray-100 transition duration-200">Start Fuzz...</a>
+        </div>
+    </section>
+
+    <!-- About the Tool Section -->
+    <section id="about" class=" herpy-20 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 style="font-size: 3rem;" class="text-3xl font-bold mb-6 mt-3 text-center">Features</h2>
+            <p class=" bolder text-lg text-center mb-10">
+                Our tool is designed to help you manage your tasks and projects with ease. 
+                With a user-friendly interface and powerful features, you can streamline your workflow and increase productivity.
+            </p>
+            <div class=" grid grid-cols-1 md:grid-cols-3 gap-10">
+                <!-- Feature Card 1 -->
+                <div class="bg-gray-100 p-6 rounded-lg shadow-md text-center">
+                    <h3 style="font-size: 1.8rem;" class="text-2xl font-semibold mb-2">Multiple Attack Support</h3>
+                    <p class="bolder text-gray-600">The tool supports various types of attacks, including Cross-Site Scripting (XSS), Zero Redirect Bypass, and SQL Injection (SQLi). It allows users to quickly switch between attack types using an intuitive interface.</p>
+                </div>
+
+                <!-- Feature Card 2 -->
+                <div class="bg-gray-100 p-6 rounded-lg shadow-md text-center">
+                    <h3 style="font-size: 1.8rem;" class="text-2xl font-semibold mb-2">Customizable Wordlists</h3>
+                    <p class="bolder text-gray-600">Users can choose custom wordlists to perform fuzzing attacks, enabling more personalized and effective testing depending on the target vulnerabilities.</p>
+                </div>
+
+                <!-- Feature Card 3 -->
+                <div class="bg-gray-100 p-6 rounded-lg shadow-md text-center">
+                    <h3 style="font-size: 1.8rem;" class="text-2xl font-semibold mb-2">User-Friendly Interface</h3>
+                    <p class="bolder text-gray-600">The tool comes with an easy-to-navigate interface, designed for both beginners and experienced security testers. It streamlines the process of launching attacks with just a few clicks, making it accessible to a wide range of users..</p>
+                </div>
+
+                <!-- Feature Card 4 -->
+                <div class="bg-gray-100 p-6 mb-7 rounded-lg shadow-md text-center">
+                    <h3 style="font-size: 1.8rem;" class="text-2xl font-semibold mb-2">Automated Output Logging</h3>
+                    <p class="bolder text-gray-600">The tool automatically logs the results of the attack into a CSV file for easy review, analysis, and reporting. You can also download the CSV file directly from the tool.</p>
+                </div>
+
+                <!-- Feature Card 5 -->
+                <div class="bg-gray-100 p-6 mb-7 rounded-lg shadow-md text-center">
+                    <h3 class="text-2xl font-semibold mb-2">Real-Time Attack Results</h3>
+                    <p class="bolder text-gray-600">After an attack is executed, results are immediately displayed in a user-friendly HTML table, offering quick insights into the discovered vulnerabilities.</p>
+                </div>
+
+                <!-- Feature Card 6 -->
+                <div class="bg-gray-100 p-6 mb-7 rounded-lg shadow-md text-center">
+                    <h3 style="font-size: 1.8rem;" class="text-2xl font-semibold mb-2">Error Handling for Better Accuracy</h3>
+                    <p class="bolder text-gray-600">Advanced handling of HTTP response codes (such as 404 and 302) ensures that the results are accurate and refined, reducing false positives during testing.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="Hero text-white">
+        <div class="container mx-auto px-4 py-6">
+            <p class=" bolder text-center">&copy; 2024 Your Company Name. All rights reserved.</p>
+            <div class="flex bolder justify-center mt-2">
+                <a href="#" class="mx-2 bolder hover:underline">Privacy Policy</a>
+                <a href="#" class="mx-2 bolder hover:underline">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
 </body>
+
 </html>

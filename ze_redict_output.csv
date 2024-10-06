@@ -1,0 +1,10 @@
+id,response,lines,word,chars,request,success
+16,200,18,32,502,//google.com.evil.com@attacker.com,1
+1,200,18,32,502,http://attacker.com,1
+3,200,18,32,502,http://example.com/redirect,1
+15,200,18,32,502,/%09/evil.com,1
+6,200,18,32,502,"data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==",1
+18,200,18,32,502,//google.com&@evil.com,1
+14,200,18,32,502,//%0D%0Agoogle.com,1
+17,200,18,32,502,http://%0d%0aevil.com,1
+20,200,18,32,502,http://alf.nu/alert1?redirect=,1

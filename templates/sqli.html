@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html class="h-full bg-gray-100" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>SQLi Tool</title>
+</head>
+<body class="h-full">
+    <div class="min-h-full">
+        <nav class="bg-gray-800">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="flex h-16 items-center justify-between">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <a href="#" class="rounded-md px-3 py-2 text-sm text-xl font-medium text-white">}fuZ...Zer{</a>
+                        </div>
+                        <div class="hidden md:block">
+                            <div class="ml-10 flex items-baseline space-x-4">
+                                <a href="{{ url_for('xss') }}" class="rounded-md px-3 py-2 text-sm font-large text-xl text-gray-300 hover:bg-gray-700 hover:text-white">XSS</a>
+                                <a href="{{ url_for('csrf') }}" class="rounded-md px-3 py-2 text-sm font-large text-xl text-gray-300 hover:bg-gray-700 hover:text-white">CSRF</a>
+                                <a href="{{ url_for('sqli') }}" class="rounded-md px-3 py-2 text-sm font-large text-xl text-gray-300 hover:bg-gray-700 hover:text-white">SQLi</a>
+                                <a href="{{ url_for('dir') }}" class="rounded-md px-3 py-2 text-sm font-large text-xl text-gray-300 hover:bg-gray-700 hover:text-white">DIR</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <header class="bg-white shadow">
+            <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                <h1 class="text-3xl font-bold tracking-tight text-gray-900">SQL Injection</h1>
+            </div>
+        </header>
+
+        <main>
+            <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                <form id="sqli-form" class="p-6 rounded-lg shadow-md" method="POST" action="{{ url_for('sqli') }}">
+                    <label for="url" class="block text-lg font-bold mb-2">Enter URL to Fuzz:</label>
+                    <p class="rounded">Example usage: http:// (or) https://Example.com</p>
+                    <input type="text" id="url" name="url" class="w-full p-2 mb-4 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="http://example.com" required>
+                    <button type="submit" class="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded">Start Fuzzing</button>
+                </form>
+
+                <!-- Table for displaying SQLi data -->
+                <div id="results" class="mt-8 w-full max-w-7xl"> 
+                    <table class="table-auto w-full border-collapse">
+                        <thead>
+                            <tr>
+                                <th class="border px-4 py-2">Response Code</th>
+                                <th class="border px-4 py-2">Payload</th>
+                                <th class="border px-4 py-2">URL</th>
+                                <th class="border px-4 py-2">Server</th>
+                                <th class="border px-4 py-2">Method</th>
+                                <th class="border px-4 py-2">Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sqli-data-body">
+                            {% for row in data %}
+                            <tr>
+                                <td>{{ row['Response Code'] }}</td>
+                                <td>{{ row['Payload'] }}</td>
+                                <td>{{ row['URL'] }}</td>
+                                <td>{{ row['Server'] }}</td>
+                                <td>{{ row['Method'] }}</td>
+                                <td>{{ row['Time'] }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

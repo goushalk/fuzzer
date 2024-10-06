@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fuzzing Tool</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #1f2937; /* Dark background */
+            color: #f9fafb; /* Light text color */
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center h-screen p-6">
+    <h1 class="text-4xl font-bold mb-8">Fuzzing Tool</h1>
+    <form id="fuzz-form" class="bg-gray-800 p-6 rounded-lg shadow-md w-full max-w-md">
+        <label for="url" class="block text-lg font-bold mb-2">Enter URL to Fuzz:</label>
+        <p>Example usage:- http://example.com</p>
+        <input type="text" id="url" class="w-full p-2 mb-4 border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="http://example.com" required>
+        <button type="submit" class="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded">Start Fuzzing</button>
+    </form>
+    <div id="results" class="mt-8 w-full max-w-md"></div>
+
+    <script>
+        document.getElementById('fuzz-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const url = document.getElementById('url').value;
+            const response = await fetch('/fuzz', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ url })
+            });
+            const data = await response.json();
+            displayResults(data);
+        });
+
+        function displayResults(data) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+
+            for (const [key, value] of Object.entries(data)) {
+                const section = document.createElement('div');
+                section.className = 'mb-4';
+                const heading = document.createElement('h2');
+                heading.className = 'text-2xl font-bold mb-2';
+                heading.textContent = key.replace(/_/g, ' ').toUpperCase();
+                section.appendChild(heading);
+
+                const list = document.createElement('ul');
+                value.forEach(item => {
+                    const listItem = document.createElement('li');
+                    listItem.className = 'p-2 border border-gray-600 mb-1 rounded';
+                    listItem.textContent = item;
+                    list.appendChild(listItem);
+                });
+                section.appendChild(list);
+                resultsDiv.appendChild(section);
+            }
+        }
+    </script>
+    <!-- This JavaScript code snippet listens for the submission of a form with the ID `fuzz-form`. Upon form submission, it prevents the default behavior and performs the following steps: -->
+<!-- 
+    1. **Extracts the URL** entered by the user from the input field with the ID `url`.
+    2. **Sends a POST request** to the server endpoint `/fuzz`, passing the URL in the request body as JSON.
+    3. **Waits for a response** from the server, which is expected to be JSON data.
+    4. **Calls `displayResults(data)`** to dynamically generate and display the results on the webpage.
+    
+    The `displayResults` function does the following:
+    
+    1. It takes the received `data` and finds the `results` div to display the content.
+    2. It iterates over the `data` entries (assumed to be a dictionary of key-value pairs).
+    3. For each key-value pair, it creates a section with a heading displaying the key (formatted by replacing underscores with spaces and converting to uppercase).
+    4. It creates a list for each value (assumed to be an array) and populates the list items accordingly.
+    5. These sections are then appended to the `results` div.
+    
+    This setup is useful for a fuzzing tool where you send a URL to the backend to perform some processing (like security fuzzing), and then return results to be displayed on the frontend. If you want further adjustments or improvements, let me know! -->
+</body>
+</html>

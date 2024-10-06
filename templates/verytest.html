@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WFuzz Attack Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-200 flex flex-col min-h-screen">
+    <!-- Navigation Bar -->
+    <nav class="bg-red-600 p-4">
+        <div class="container mx-auto">
+            <h1 class="text-white text-xl font-bold">}fuZ...Zer{ - attack Tool</h1>
+        </div>
+    </nav>
+
+    <!-- Main Form Section -->
+    <div class="flex-grow flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+            <h1 class="text-2xl text-red-600 font-bold mb-4 text-center">}fuZ...Zer{</h1>
+            <form method="POST" action="/" class="space-y-4">
+                <div>
+                    <label for="url" class="block text-sm font-large text-gray-700" style="font-size: 1rem; font-weight: bolder;">Target URL:</label>
+                    <input type="text" id="url" name="url" required class="mt-1 block w-full p-2 border border-red-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500" placeholder="Enter target URL">
+                </div>
+                <div>
+                    <label for="attack_type" class="block text-sm font-medium text-gray-700" style="font-size: 1rem;font-weight: bolder;">Select Attack Type:</label>
+                    <select id="attack_type" name="attack_type" class="mt-1 block w-full p-2 border border-red-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-red-500">
+                        <option value="xss">XSS</option>
+                        <option value="zero_redirect">Zero Redirect</option>
+                        <option value="sqli">SQL Injection</option>
+                        <option value="hid_dict">Hidden Directory</option>
+                        <option value="subdomain_enum">Subdomain Enumaration (EG:google.com)</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full bg-red-600 text-white font-semibold py-2 rounded-md hover:bg-blue-700 transition duration-200">Launch Attack</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

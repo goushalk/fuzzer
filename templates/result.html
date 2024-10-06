@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attack Results</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        /* Custom styles for the table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+        }
+        th {
+            background-color: #f8fafc; /* Light gray background for headers */
+            color: #333; /* Darker text color for headers */
+        }
+        td {
+            background-color: #ffffff; /* White background for cells */
+            color: #4a4a4a; /* Dark gray text color for cells */
+        }
+        tr:hover td {
+            background-color: #f0f4f8; /* Light blue background on hover */
+        }
+    </style>
+</head>
+<body class="bg-red-50 text-gray-800 flex flex-col items-center min-h-screen">
+    <div class="container mx-auto p-4">
+        <h1 class="text-3xl font-bold text-red-600 text-center mb-4">Attack Results</h1>
+        <div class="bg-white shadow-md rounded-lg p-6">
+            <p class="text-lg font-semibold">Attack Type: <span class="font-normal">{{ attack_type }}</span></p>
+            <p class="text-lg font-semibold">Target URL: <span class="font-normal">{{ url }}</span></p>
+            
+            <p class="mt-4">Your attack has been executed successfully. Below are the results:</p>
+            
+            <!-- Display the CSV content as a table -->
+            <div class="overflow-x-auto mt-4">
+                <table class="min-w-full bg-white shadow-md rounded-lg">
+                    <thead>
+                        <tr>
+                            <!-- <th class="text-left py-3 px-4">Column 1</th>
+                            <th class="text-left py-3 px-4">Column 2</th>
+                            <th class="text-left py-3 px-4">Column 3</th> -->
+                            <!-- Add more headers as needed -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{ csv_content | safe }}
+                    </tbody>
+                </table>
+            </div>
+            <p><span style="font-size: 2rem;" class="bolder font-normal">{{ metigation }}</span></p>
+            <p class="mt-4">You can also download the results as a CSV file:</p>
+            <a href="/download/{{ attack_type }}_output.csv" class="mt-2 inline-block bg-red-600 text-white font-semibold py-2 px-4 rounded hover:bg-red-700 transition duration-200">Download CSV</a>
+            <a href="{{ url_for('index' ) }}" class="bg-white text-red-600 font-semibold py-2 px-4 rounded shadow-lg hover:bg-gray-100 transition duration-200">Go Back</a>
+        </div>
+    </div>
+</body>
+</html>
